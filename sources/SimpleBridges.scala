@@ -1,0 +1,117 @@
+package myfunlaby
+
+import com.funlabyrinthe.core.*
+import com.funlabyrinthe.core.graphics.*
+import com.funlabyrinthe.mazes.*
+import com.funlabyrinthe.mazes.std.*
+
+object SimpleBridges extends Module:
+  override protected def preInitialize()(using Universe): Unit =
+    val isAboveBridge = newAttribute[Boolean](false)
+  end preInitialize
+  
+  override protected def createComponents()(using Universe): Unit =
+    val simpleBridgeCreator = new SimpleBridgeCreator
+  end createComponents
+
+  def isAboveBridge(using Universe): Attribute[Boolean] = myAttributeByID("isAboveBridge")
+
+  def simpleBridgeCreator(using Universe): SimpleBridgeCreator = myComponentByID("simpleBridgeCreator")
+end SimpleBridges
+
+export SimpleBridges.*
+
+class SimpleBridgeCreator(using ComponentInit) extends ComponentCreator:
+  type CreatedComponentType = SimpleBridge
+
+  @transient @noinspect
+  val centerPainter: Painter =
+    universe.EmptyPainter + "Bridges/BridgeCenter"
+    
+  @transient @noinspect
+  val openingPainters: List[Painter] =
+    Direction.values.toList.map(d => universe.EmptyPainter + s"Bridges/Bridge$d")
+
+  category = ComponentCategory("bridges", "Bridges")
+
+  icon += "Bridges/BridgeCenter"
+  icon += "Bridges/BridgeNorth"
+  icon += "Bridges/BridgeSouth"
+  icon += "Creators/Creator"
+  
+  protected def createComponent()(using ComponentInit): CreatedComponentType =
+    new SimpleBridge()
+end SimpleBridgeCreator
+
+class SimpleBridge(using ComponentInit) extends PosComponent derives Reflector:
+  var openings: Set[Direction] = Direction.values.toSet
+  
+  category = ComponentCategory("bridges", "Bridges")
+
+  override def reflect() = autoReflect[SimpleBridge]
+
+  // Prevent any use of the plank
+  override def dispatch[A]: PartialFunction[SquareMessage[A], A] = {
+    case PlankInteraction(kind, player, passOverPos, leaveFrom, arriveAt) =>
+      false
+  }
+
+  override protected def doDraw(context: DrawSquareContext): Unit =
+    import context.*
+
+    val creator = simpleBridgeCreator
+    creator.centerPainter.drawTo(context)
+    for dir <- openings do
+      creator.openingPainters(dir.ordinal).drawTo(context)
+  end doDraw
+
+  override def hookEntering(context: MoveContext): Unit =
+    import context.*
+
+    for dir <- player.direction do
+      if !openings.contains(dir.opposite) then
+        hooked = false
+  end hookEntering
+
+  override def hookExiting(context: MoveContext): Unit =
+    import context.*
+
+    for dir <- player.direction do
+      if player.attributes(isAboveBridge) then
+        if !openings.contains(dir) then
+          cancel()
+      else
+        if openings.contains(dir) then
+          cancel()
+        else
+          hooked = false
+  end hookExiting
+
+  override def hookEntered(context: MoveContext): Unit =
+    import context.*
+
+    for dir <- player.direction do
+      if openings.contains(dir.opposite) then
+        player.attributes(isAboveBridge) = true
+      else
+        player.hide()
+        hooked = false
+  end hookEntered
+
+  override def hookExited(context: MoveContext): Unit =
+    import context.*
+
+    if player.attributes(isAboveBridge) then
+      player.attributes(isAboveBridge) = false
+    else
+      player.show()
+      hooked = false
+  end hookExited
+
+  override def hookExecute(context: MoveContext): Unit =
+    import context.*
+
+    if !player.attributes(isAboveBridge) then
+      hooked = false
+  end hookExecute
+end SimpleBridge
