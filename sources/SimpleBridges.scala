@@ -21,9 +21,7 @@ end SimpleBridges
 
 export SimpleBridges.*
 
-class SimpleBridgeCreator(using ComponentInit) extends ComponentCreator:
-  type CreatedComponentType = SimpleBridge
-
+class SimpleBridgeCreator(using ComponentInit) extends ComponentCreator[SimpleBridge]:
   @transient @noinspect
   val centerPainter: Painter =
     universe.EmptyPainter + "Bridges/BridgeCenter"
@@ -38,9 +36,6 @@ class SimpleBridgeCreator(using ComponentInit) extends ComponentCreator:
   icon += "Bridges/BridgeNorth"
   icon += "Bridges/BridgeSouth"
   icon += "Creators/Creator"
-  
-  protected def createComponent()(using ComponentInit): CreatedComponentType =
-    new SimpleBridge()
 end SimpleBridgeCreator
 
 class SimpleBridge(using ComponentInit) extends PosComponent derives Reflector:
