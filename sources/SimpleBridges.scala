@@ -38,12 +38,10 @@ class SimpleBridgeCreator(using ComponentInit) extends ComponentCreator[SimpleBr
   icon += "Creators/Creator"
 end SimpleBridgeCreator
 
-class SimpleBridge(using ComponentInit) extends PosComponent derives Reflector:
+class SimpleBridge(using ComponentInit) extends PosComponent:
   var openings: Set[Direction] = Direction.values.toSet
   
   category = ComponentCategory("bridges", "Bridges")
-
-  override def reflect() = autoReflect[SimpleBridge]
 
   // Prevent any use of the plank
   override def dispatch[A]: PartialFunction[SquareMessage[A], A] = {
