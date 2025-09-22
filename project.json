@@ -1,7 +1,8 @@
 {
   "isLibrary": true,
   "modules": [
+    "com.funlabyrinthe.core.AdditionalComponents",
     "com.funlabyrinthe.mazes.Mazes",
-    "myfunlaby.SimpleBridges"
+    "user.sjrd.simplebridges.SimpleBridges"
   ]
 }

@@ -1,4 +1,4 @@
-package myfunlaby
+package user.sjrd.simplebridges
 
 import com.funlabyrinthe.core.*
 import com.funlabyrinthe.core.graphics.*
@@ -10,16 +10,12 @@ object SimpleBridges extends Module:
     val isAboveBridge = newAttribute[Boolean](false)
   end preInitialize
   
-  override protected def createComponents()(using Universe): Unit =
-    val simpleBridgeCreator = new SimpleBridgeCreator
-  end createComponents
-
   def isAboveBridge(using Universe): Attribute[Boolean] = myAttributeByID("isAboveBridge")
-
-  def simpleBridgeCreator(using Universe): SimpleBridgeCreator = myComponentByID("simpleBridgeCreator")
 end SimpleBridges
 
-export SimpleBridges.*
+export SimpleBridges.isAboveBridge
+
+@definition def simpleBridgeCreator(using Universe) = new SimpleBridgeCreator
 
 class SimpleBridgeCreator(using ComponentInit) extends ComponentCreator[SimpleBridge]:
   @transient @noinspect
