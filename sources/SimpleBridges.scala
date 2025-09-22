@@ -5,15 +5,9 @@ import com.funlabyrinthe.core.graphics.*
 import com.funlabyrinthe.mazes.*
 import com.funlabyrinthe.mazes.std.*
 
-object SimpleBridges extends Module:
-  override protected def preInitialize()(using Universe): Unit =
-    val isAboveBridge = newAttribute[Boolean](false)
-  end preInitialize
-  
-  def isAboveBridge(using Universe): Attribute[Boolean] = myAttributeByID("isAboveBridge")
-end SimpleBridges
+object SimpleBridges extends Module
 
-export SimpleBridges.isAboveBridge
+@definition def isAboveBridge(using Universe) = Attribute.create[Boolean](false)
 
 @definition def simpleBridgeCreator(using Universe) = new SimpleBridgeCreator
 
