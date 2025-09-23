@@ -15,7 +15,7 @@ class SimpleBridgeCreator(using ComponentInit) extends ComponentCreator[SimpleBr
   @transient @noinspect
   val centerPainter: Painter =
     universe.EmptyPainter + "Bridges/BridgeCenter"
-    
+
   @transient @noinspect
   val openingPainters: List[Painter] =
     Direction.values.toList.map(d => universe.EmptyPainter + s"Bridges/Bridge$d")
@@ -30,7 +30,7 @@ end SimpleBridgeCreator
 
 class SimpleBridge(using ComponentInit) extends PosComponent:
   var openings: Set[Direction] = Direction.values.toSet
-  
+
   category = ComponentCategory("bridges", "Bridges")
 
   // Prevent any use of the plank
