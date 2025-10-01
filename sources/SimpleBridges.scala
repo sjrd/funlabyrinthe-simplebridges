@@ -43,9 +43,9 @@ class SimpleBridge(using ComponentInit) extends PosComponent:
     import context.*
 
     val creator = simpleBridgeCreator
-    creator.centerPainter.drawTo(context)
+    context.drawTiled(creator.centerPainter)
     for dir <- openings do
-      creator.openingPainters(dir.ordinal).drawTo(context)
+      context.drawTiled(creator.openingPainters(dir.ordinal))
   end doDraw
 
   override def hookEntering(context: MoveContext): Unit =
